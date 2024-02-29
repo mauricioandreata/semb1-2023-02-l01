@@ -2,19 +2,44 @@
 
 ## 1. Explique brevemente o que é compilação cruzada (***cross-compiling***) e para que ela serve.
 
+A compilação cruzada é uma maneira de ser produzir uma aplicação para uma plataforma diferente da qual o compilador está presente. No nosso caso, o compilador GCC por padrão gera arquivos executáveis compatíveis com os sistemas operacionais mais comuns, como Windows e Linux. No entanto nosso microcontrolador estudado STM32 não possui nenhum SO, assim é necessário o uso da compilação cruzada para gerar arquivos executáveis para o STM a partir do compilador GCC, assim podemos criar nosso código em uma IDE mais confortável para depois o enviar para o sistema embarcado.
+
 ## 2. O que é um código de inicialização ou ***startup*** e qual sua finalidade?
+
+O código de inicialização (startup) é o responsável por inicializar nosso microcontrolador até que nosso programa executável possa ser executado, já que quando enviamos nosso executável para a memória do microcontrolador ele não é imediatamente executado. Assim, é necessário realizar uma série de tarefas até que o controle do nosso microcontrolador vá para a main() de nosso programa.
 
 ## 3. Sobre o utilitário **make** e o arquivo **Makefile responda**:
 
 #### (a) Explique com suas palavras o que é e para que serve o **Makefile**.
 
+O make é um utilitário usado para automatizar o processo de compilação do nosso código, as instruções para a compilação e os programas a serem compilados estão em um arquivo chamado Makefile. Com o make não é mais necessário realizar diversas vezes o comando do compilador GCC (no nosso caso arm-none-eabi-gcc -c -mcpu=cortex-m4 -mthumb -O8 -Wall) para todos os arquivos de um determinado projeto, assim otimizando o nosso tempo e facilitando caso algum arquivo tenha que ser atualizado e o projeto tenha que ser todo compilado novamente.
+
 #### (b) Descreva brevemente o processo realizado pelo utilitário **make** para compilar um programa.
+
+O utilitário make faz nada mais do que realizar comandos em nosso terminal a partir de instruções descritas no arquivo Makefile. O procedimento é do make é descrito a seguir, a partir de regras descritas no Makefile, são passados targets (arquivos alvos a serem criados) e seus prerequisites (dependências do arquivo alvo). O make verifica se o arquivo alvo de uma regra está atualizado, ou seja, se ele não existe ou se é mais antigo de que alguma dependência, caso esteja desatualizado o make criará um novo arquivo alvo utilizando a instrução descrita na regra e os arquivos dependência passados anteriormente, utilizando a seguinte sintaxe:
+
+#### targets: prerequisites
+####	 recipe
 
 #### (c) Qual é a sintaxe utilizada para criar um novo **target**?
 
+A sintaxe para se criar um novo target é
+#### target: 
+Onde target é o nome do arquivo a ser criado ou atualizado.
+
 #### (d) Como são definidas as dependências de um **target**, para que elas são utilizadas?
 
+As dependências de um target nada mais são que os arquivos necessários para se criar o target. Por exemplo, para se criar um arquivo objeto realocável .o de um programa é necessário compilar um código base .c. Assim, dizemos que esse código .c é uma dependência do arquivo .o.
+
 #### (e) O que são as regras do **Makefile**, qual a diferença entre regras implícitas e explícitas?
+
+Uma regra do Makefile é uma instrução para o utilitário make que o instrui a saber qual código realizar no terminal. Regras tem a sintaxe já descrita no item b. Regras explícitas deixam claro quais os arquivos específicos a serem atulizados (targets), quais suas dependências e qual a instrução dessa regra, como no exemplo abaixo:
+#### main.o: main.c
+#### 	arm-none-eabi-gcc -c -g -mcpu=cortex-m4 -mthumb -O0 -Wall main.c -o main.o
+Já as regras implícitas tentam tornar as instruções da maneira mais genérica possível, através de variáveis automáticas como $@ (representam o target da regra), $< (representa a primeira dependência) e $^ (representa todas as dependências), ou %.o que lista todos os arquivos .o, além de ser possível criar novas variáveis com a sintaxe $(nome_da_variavel). Um exemplo de regra implícita é mostrado abaixo:
+
+#### $(OBJDIR)/%.o:%.c
+####	 $(CC) -c $(CFLAGS) $(DEPFLAGS) $< -o $@
 
 ## 4. Sobre a arquitetura **ARM Cortex-M** responda:
 
