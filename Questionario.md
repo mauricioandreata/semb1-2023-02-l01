@@ -36,7 +36,12 @@ As dependências de um target nada mais são que os arquivos necessários para s
 Uma regra do Makefile é uma instrução para o utilitário make que o instrui a saber qual código realizar no terminal. Regras tem a sintaxe já descrita no item b. Regras explícitas deixam claro quais os arquivos específicos a serem atulizados (targets), quais suas dependências e qual a instrução dessa regra, como no exemplo abaixo:
 #### main.o: main.c
 #### 	arm-none-eabi-gcc -c -g -mcpu=cortex-m4 -mthumb -O0 -Wall main.c -o main.o
-Já as regras implícitas tentam tornar as instruções da maneira mais genérica possível, através de variáveis automáticas como $@ (representam o target da regra), $< (representa a primeira dependência) e $^ (representa todas as dependências), ou %.o que lista todos os arquivos .o, além de ser possível criar novas variáveis com a sintaxe $(nome_da_variavel). Um exemplo de regra implícita é mostrado abaixo:
+Já as regras implícitas tentam tornar as instruções da maneira mais genérica possível, através de variáveis automáticas como:
+"$@" (representam o target da regra), 
+"$<" (representa a primeira dependência) e 
+"$^" (representa todas as dependências), 
+ou %.o que lista todos os arquivos .o, 
+além de ser possível criar novas variáveis com a sintaxe $(nome_da_variavel). Um exemplo de regra implícita é mostrado abaixo:
 
 #### $(OBJDIR)/%.o:%.c
 ####	 $(CC) -c $(CFLAGS) $(DEPFLAGS) $< -o $@
